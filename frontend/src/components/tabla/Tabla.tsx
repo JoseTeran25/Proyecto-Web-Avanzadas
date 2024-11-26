@@ -1,91 +1,222 @@
+'use client';
+
+import { useEffect, useState } from "react";
+
+interface Professor {
+  id: number;
+  name: string;
+}
+
+interface Grade {
+  id: number;
+  grade: string;
+  professor: Professor;
+}
+
+interface Student {
+  id: number;
+  name: string;
+  email: string;
+  grades: Grade[];
+}
+
+interface Course {
+  id: number;
+  title: string;
+  description: string;
+  professor: Professor;
+  students: Student[];
+}
 
 export const Tabla = () => {
+  const [course, setCourse] = useState<Course | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("http://26.70.60.63:4000/grade/course/1");
+        if (!response.ok) {
+          throw new Error("Failed to fetch course data");
+        }
+        const data = await response.json();
+        setCourse(data.course);
+      } catch (err) {
+        setError((err as Error).message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const handleAddGrade = async (studentId: number) => {
+    const newGrade = prompt("Enter the grade to add:");
+    if (!newGrade) return;
+
+    try {
+      const response = await fetch("http://26.70.60.63:4000/grade", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          courseId: 1,
+          professorId: course?.professor.id,
+          studentId,
+          grade: parseFloat(newGrade),
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to add grade");
+      }
+
+      alert("Grade added successfully!");
+      // Refresh data
+      const updatedStudentGrades = await fetch(
+        `http://26.70.60.63:4000/grade/student/${studentId}`
+      );
+      const grades = await updatedStudentGrades.json();
+      setCourse((prev) => {
+        if (!prev) return null;
+        const updatedStudents = prev.students.map((student) =>
+          student.id === studentId ? { ...student, grades } : student
+        );
+        return { ...prev, students: updatedStudents };
+      });
+    } catch (err) {
+      console.error(err);
+      alert("Error adding grade.");
+    }
+  };
+
+  const handleEditGrade = async (gradeId: number) => {
+    const newGrade = prompt("Enter the new grade:");
+    if (!newGrade) return;
+
+    try {
+      const response = await fetch(`http://26.70.60.63:4000/grade/${gradeId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ grade: parseFloat(newGrade) }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to edit grade");
+      }
+
+      alert("Grade updated successfully!");
+      // Refresh data (re-fetch course)
+      const updatedResponse = await fetch("http://26.70.60.63:4000/grade/course/1");
+      const updatedCourse = await updatedResponse.json();
+      setCourse(updatedCourse.course);
+    } catch (err) {
+      console.error(err);
+      alert("Error updating grade.");
+    }
+  };
+
+  const handleDeleteGrade = async (gradeId: number) => {
+    if (!confirm("Are you sure you want to delete this grade?")) return;
+
+    try {
+      const response = await fetch(`http://26.70.60.63:4000/grade/${gradeId}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete grade");
+      }
+
+      alert("Grade deleted successfully!");
+      // Refresh data (re-fetch course)
+      const updatedResponse = await fetch(`http://26.70.60.63:4000/grade/course/1`);
+      const updatedCourse = await updatedResponse.json();
+      setCourse(updatedCourse.course);
+    } catch (err) {
+      console.error(err);
+      alert("Error deleting grade.");
+    }
+  };
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (error) {
+    return <p className="text-red-500">Error: {error}</p>;
+  }
+
+  if (!course) {
+    return <p>No course data available</p>;
+  }
 
   return (
-    <div className="flex flex-col mt-6">
-      <div className="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-        <div className="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-          <div className="overflow-hidden border border-gray-200 md:rounded-lg">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th scope="col" className="py-3.5 px-4 text-sm font-normal text-left rtl:text-right text-gray-500">
-                    <button className="flex items-center gap-x-3 focus:outline-none">
-                      <span>Company</span>
+    <section className="bg-white">
+      <div className="container px-6 py-10 mx-auto">
+        <h1 className="text-2xl font-semibold text-gray-800 capitalize lg:text-3xl">
+          {course.title} - Students
+        </h1>
+        <p className="mt-2 text-gray-600">{course.description}</p>
+        <p className="mt-2 text-gray-800 font-medium">
+          Professor: {course.professor.name}
+        </p>
 
-                      <svg className="h-3" viewBox="0 0 10 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M2.13347 0.0999756H2.98516L5.01902 4.79058H3.86226L3.45549 3.79907H1.63772L1.24366 4.79058H0.0996094L2.13347 0.0999756ZM2.54025 1.46012L1.96822 2.92196H3.11227L2.54025 1.46012Z" fill="currentColor" stroke="currentColor" strokeWidth="0.1" />
-                        <path d="M0.722656 9.60832L3.09974 6.78633H0.811638V5.87109H4.35819V6.78633L2.01925 9.60832H4.43446V10.5617H0.722656V9.60832Z" fill="currentColor" stroke="currentColor" strokeWidth="0.1" />
-                        <path d="M8.45558 7.25664V7.40664H8.60558H9.66065C9.72481 7.40664 9.74667 7.42274 9.75141 7.42691C9.75148 7.42808 9.75146 7.42993 9.75116 7.43262C9.75001 7.44265 9.74458 7.46304 9.72525 7.49314C9.72522 7.4932 9.72518 7.49326 9.72514 7.49332L7.86959 10.3529L7.86924 10.3534C7.83227 10.4109 7.79863 10.418 7.78568 10.418C7.77272 10.418 7.73908 10.4109 7.70211 10.3534L7.70177 10.3529L5.84621 7.49332C5.84617 7.49325 5.84612 7.49318 5.84608 7.49311C5.82677 7.46302 5.82135 7.44264 5.8202 7.43262C5.81989 7.42993 5.81987 7.42808 5.81994 7.42691C5.82469 7.42274 5.84655 7.40664 5.91071 7.40664H6.96578H7.11578V7.25664V0.633865C7.11578 0.42434 7.29014 0.249976 7.49967 0.249976H8.07169C8.28121 0.249976 8.45558 0.42434 8.45558 0.633865V7.25664Z" fill="currentColor" stroke="currentColor" strokeWidth="0.3" />
-                      </svg>
-                    </button>
-                  </th>
-
-                  <th scope="col" className="px-12 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 ">
-                    Status
-                  </th>
-
-                  <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 ">
-                    About
-                  </th>
-
-                  <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 ">Users</th>
-
-                  <th scope="col" className="px-4 py-3.5 text-sm font-normal text-left rtl:text-right text-gray-500 ">License use</th>
-
-                  <th scope="col" className="relative py-3.5 px-4">
-                    <span className="sr-only">Edit</span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200 ">
-                <tr>
-                  <td className="px-4 py-4 text-sm font-medium whitespace-nowrap">
-                    <div>
-                      <h2 className="font-medium text-gray-800 ">Catalog</h2>
-                      <p className="text-sm font-normal text-gray-600 ">catalogapp.io</p>
-                    </div>
+        <div className="mt-6 overflow-x-auto border border-gray-200 rounded-lg">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-4 py-3 text-left text-gray-500">Student Name</th>
+                <th className="px-4 py-3 text-left text-gray-500">Email</th>
+                <th className="px-4 py-3 text-left text-gray-500">Grades</th>
+                <th className="px-4 py-3 text-left text-gray-500">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {course.students.map((student) => (
+                <tr key={student.id}>
+                  <td className="px-4 py-3 text-gray-800">{student.name}</td>
+                  <td className="px-4 py-3 text-gray-600">{student.email}</td>
+                  <td className="px-4 py-3 text-gray-600">
+                    {student.grades.length > 0 ? (
+                      <ul className="list-disc pl-5">
+                        {student.grades.map((grade) => (
+                          <li key={grade.id} className="flex items-center gap-2">
+                            {grade.grade}
+                            <button
+                              className="text-blue-500 hover:underline"
+                              onClick={() => handleEditGrade(grade.id)}
+                            >
+                              Edit
+                            </button>
+                            <button
+                              className="text-red-500 hover:underline"
+                              onClick={() => handleDeleteGrade(grade.id)}
+                            >
+                              Delete
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <span className="text-gray-400">No grades available</span>
+                    )}
                   </td>
-                  <td className="px-12 py-4 text-sm font-medium whitespace-nowrap">
-                    <div className="inline px-3 py-1 text-sm font-normal rounded-full text-emerald-500 gap-x-2 bg-emerald-100/60 ">
-                      Customer
-                    </div>
-                  </td>
-                  <td className="px-4 py-4 text-sm whitespace-nowrap">
-                    <div>
-                      <h4 className="text-gray-700">Content curating app</h4>
-                      <p className="text-gray-500 ">Brings all your news into one place</p>
-                    </div>
-                  </td>
-                  <td className="px-4 py-4 text-sm whitespace-nowrap">
-                    <div className="flex items-center">
-                      <img className="object-cover w-6 h-6 -mx-1 border-2 border-white rounded-full  shrink-0" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&q=80" alt="" />
-                      <img className="object-cover w-6 h-6 -mx-1 border-2 border-white rounded-full  shrink-0" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&q=80" alt="" />
-                      <img className="object-cover w-6 h-6 -mx-1 border-2 border-white rounded-full  shrink-0" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1256&q=80" alt="" />
-                      <img className="object-cover w-6 h-6 -mx-1 border-2 border-white rounded-full  shrink-0" src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=256&q=80" alt="" />
-                      <p className="flex items-center justify-center w-6 h-6 -mx-1 text-xs text-blue-600 bg-blue-100 border-2 border-white rounded-full">+4</p>
-                    </div>
-                  </td>
-
-                  <td className="px-4 py-4 text-sm whitespace-nowrap">
-                    <div className="w-48 h-1.5 bg-blue-200 overflow-hidden rounded-full">
-                      <div className="bg-blue-500 w-2/3 h-1.5"></div>
-                    </div>
-                  </td>
-
-                  <td className="px-4 py-4 text-sm whitespace-nowrap">
-                    <button className="px-1 py-1 text-gray-500 transition-colors duration-200 rounded-lg  hover:bg-gray-100">
-                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="w-6 h-6">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z" />
-                      </svg>
+                  <td className="px-4 py-3 text-gray-600">
+                    <button
+                      className="text-green-500 hover:underline"
+                      onClick={() => handleAddGrade(student.id)}
+                    >
+                      Add Grade
                     </button>
                   </td>
                 </tr>
-              </tbody>
-            </table>
-          </div>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
-    </div>
-  )
-}
+    </section>
+  );
+};
