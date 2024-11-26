@@ -1,20 +1,5 @@
-'use client'
-
-import { getCookie } from "cookies-next"
-import { useEffect, useState } from "react"
 
 export const Tabla = () => {
-
-  const [datosTabla, setDatosTabla] = useState([])
-
-  useEffect(() => {
-    const datosCookie = getCookie("cookie")
-    if (datosCookie) {
-      setDatosTabla(JSON.parse(datosCookie as string))
-    } else {
-      alert("No hay datos para disponibles inicie sesion")
-    }
-  }, [])
 
   return (
     <div className="flex flex-col mt-6">
