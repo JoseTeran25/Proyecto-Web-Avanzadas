@@ -1,14 +1,9 @@
-import { Cabecera, Paginacion, Tabla } from "@/components";
+
+import Pantallas from "@/components/pantallas/Pantallas";
 
 export default function () {
-
+  
   return (
-    <section className="container px-4 mx-auto">
-      <Cabecera />
-
-      <Tabla />
-
-      <Paginacion />
-    </section>
+    <Pantallas />
   );
 }
