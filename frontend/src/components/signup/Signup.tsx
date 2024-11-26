@@ -72,6 +72,7 @@ export const SignUp = () => {
                 </label>
                 <input
                   type="text"
+                  name="nombres"
                   placeholder="John"
                   className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
                 />
@@ -83,6 +84,7 @@ export const SignUp = () => {
                 </label>
                 <input
                   type="text"
+                  name="apellidos"
                   placeholder="Snow"
                   className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
                 />
@@ -94,6 +96,7 @@ export const SignUp = () => {
                 </label>
                 <input
                   type="text"
+                  name="telefono"
                   placeholder="XXX-XX-XXXX-XXX"
                   className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
                 />
@@ -105,6 +108,7 @@ export const SignUp = () => {
                 </label>
                 <input
                   type="email"
+                  name="email"
                   placeholder="johnsnow@example.com"
                   className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
                 />
@@ -116,6 +120,7 @@ export const SignUp = () => {
                 </label>
                 <input
                   type="password"
+                  name="password"
                   placeholder="Ingresa tu contraseña"
                   className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
                 />
@@ -127,6 +132,7 @@ export const SignUp = () => {
                 </label>
                 <input
                   type="password"
+                  name="confirmar-password"
                   placeholder="Ingresa tu contraseña"
                   className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-lg focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
                 />
