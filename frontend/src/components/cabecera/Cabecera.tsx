@@ -28,8 +28,8 @@ export const Cabecera = () => {
         <div>
           <div className="flex items-center gap-x-3">
             <h2 className="text-lg font-bold text-gray-800">{datosTabla.name}</h2>
-            <span className="px-3 py-1 text-xs text-blue-600 bg-blue-100 rounded-full">
-              240 Alumnos
+            <span className={`px-3 py-1 text-xs ${datosTabla.role === "professor" ? " text-blue-600 bg-blue-100" : " text-green-600 bg-green-100 "} rounded-full`}>
+              {datosTabla.role}
             </span>
           </div>
           <p className="mt-1 text-sm text-gray-500">{datosTabla.email}</p>
@@ -56,11 +56,7 @@ export const Cabecera = () => {
               />
             </svg>
           </span>
-          <input
-            type="text"
-            placeholder="Search"
-            className="block w-full py-1.5 pr-5 text-gray-700 bg-white border border-gray-200 rounded-lg md:w-80 placeholder-gray-400 pl-11 rtl:pr-11 rtl:pl-5 focus:border-blue-400 focus:ring focus:ring-blue-300 focus:outline-none focus:ring-opacity-40"
-          />
+
         </div>
       </div>
     </>
