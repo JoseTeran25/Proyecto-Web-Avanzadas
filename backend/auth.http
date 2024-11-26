@@ -46,3 +46,11 @@ GET http://26.70.60.63:4000/grade/student/2
 
 ### Obtener todas las notas de un curso
 GET http://localhost:4000/grade/course/1
+
+###Mandar correo
+POST http://localhost:4000/auth/recover-password
+Content-Type: application/json
+
+{
+  "email": "kennyp41234@gmail.com"
+}
