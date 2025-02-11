@@ -34,7 +34,7 @@ export class GradesController {
    * Actualiza una calificación.
    */
   @Put(':gradeId')
-  async updateGrade(@Param('gradeId') gradeId: number, @Body() body: any) {
+  async updateGrade(@Param('gradeId') gradeId: number, @Body() body: { grade: number }) {
     console.log(`Updating grade ID: ${gradeId}, with value:`, body);
     return this.gradesService.updateGrade(gradeId, body.grade);
   }

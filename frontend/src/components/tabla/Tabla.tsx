@@ -134,10 +134,18 @@ export const Tabla = () => {
       }
 
       alert("Grade updated successfully!");
-      // Refresh data (re-fetch course)
-      const updatedResponse = await fetch("http://26.70.60.63:4000/grade/course/1");
-      const updatedCourse = await updatedResponse.json();
-      setCourse(updatedCourse.course);
+      setCourse((prev) => {
+        if (!prev) return null;
+        return {
+          ...prev,
+          students: prev.students.map((student) => ({
+            ...student,
+            grades: student.grades.map((grade) =>
+              grade.id === gradeId ? { ...grade, grade: parseFloat(newGrade) } : grade
+            ),
+          })),
+        };
+      });
     } catch (err) {
       console.error(err);
       alert("Error updating grade.");
@@ -160,7 +168,7 @@ export const Tabla = () => {
       // Refresh data (re-fetch course)
       const updatedResponse = await fetch(`http://26.70.60.63:4000/grade/course/1`);
       const updatedCourse = await updatedResponse.json();
-      setCourse(updatedCourse.course);
+      setCourse(updatedCourse);
     } catch (err) {
       console.error(err);
       alert("Error deleting grade.");
@@ -186,9 +194,6 @@ export const Tabla = () => {
           {course.title} - Students
         </h1>
         <p className="mt-2 text-gray-600">{course.description}</p>
-        <p className="mt-2 text-gray-800 font-medium">
-          Professor: {course.professor.name}
-        </p>
 
         <div className="mt-6 overflow-x-auto border border-gray-200 rounded-lg">
           <table className="min-w-full divide-y divide-gray-200">
