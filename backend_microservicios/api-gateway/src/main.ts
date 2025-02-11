@@ -13,7 +13,7 @@ async function bootstrap() {
   // Configurar WebSockets
   app.useWebSocketAdapter(new IoAdapter(app));
 
-  await app.listen(4000);
+  await app.listen(4000, '0.0.0.0'); // 🔹 Escucha en todas las interfaces de red
   console.log('🚀 API Gateway running on http://localhost:4000');
 }
 bootstrap();
