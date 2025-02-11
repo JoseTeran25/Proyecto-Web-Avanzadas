@@ -1,7 +1,7 @@
 
 import Pantallas from "@/components/pantallas/Pantallas";
 
-export default function () {
+export default function PantallasPage() {
   
   return (
     <Pantallas />
