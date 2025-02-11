@@ -36,7 +36,7 @@ export const Tabla = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://localhost:4000/grade/course/1");
+        const response = await fetch("http://26.70.60.63:4000/grade/course/1");
         if (!response.ok) {
           throw new Error("Failed to fetch course data");
         }
@@ -84,7 +84,7 @@ export const Tabla = () => {
     if (!newGrade) return;
 
     try {
-      const response = await fetch("http://localhost:4000/grade", {
+      const response = await fetch("http://26.70.60.63:4000/grade", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -123,7 +123,7 @@ export const Tabla = () => {
     if (!newGrade) return;
 
     try {
-      const response = await fetch(`http://localhost:4000/grade/${gradeId}`, {
+      const response = await fetch(`http://26.70.60.63:4000/grade/${gradeId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ grade: parseFloat(newGrade) }),
@@ -135,7 +135,7 @@ export const Tabla = () => {
 
       alert("Grade updated successfully!");
       // Refresh data (re-fetch course)
-      const updatedResponse = await fetch("http://localhost:4000/grade/course/1");
+      const updatedResponse = await fetch("http://26.70.60.63:4000/grade/course/1");
       const updatedCourse = await updatedResponse.json();
       setCourse(updatedCourse.course);
     } catch (err) {
@@ -148,7 +148,7 @@ export const Tabla = () => {
     if (!confirm("Are you sure you want to delete this grade?")) return;
 
     try {
-      const response = await fetch(`http://localhost:4000/grade/${gradeId}`, {
+      const response = await fetch(`http://26.70.60.63:4000/grade/${gradeId}`, {
         method: "DELETE",
       });
 
@@ -158,7 +158,7 @@ export const Tabla = () => {
 
       alert("Grade deleted successfully!");
       // Refresh data (re-fetch course)
-      const updatedResponse = await fetch(`http://localhost:4000/grade/course/1`);
+      const updatedResponse = await fetch(`http://26.70.60.63:4000/grade/course/1`);
       const updatedCourse = await updatedResponse.json();
       setCourse(updatedCourse.course);
     } catch (err) {
