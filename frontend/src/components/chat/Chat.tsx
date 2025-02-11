@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 import { getCookie } from 'cookies-next';
 
-const socket = io('http://26.70.60.63:4000'); // Cambia la URL según tu entorno
+const socket = io('http://localhost:4000'); // Cambia la URL según tu entorno
 
 function Chat() {
     const [messages, setMessages] = useState<any[]>([]);

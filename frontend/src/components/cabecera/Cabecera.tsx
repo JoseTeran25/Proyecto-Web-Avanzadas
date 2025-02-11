@@ -24,7 +24,7 @@ export const Cabecera = () => {
 
   return (
     <>
-      <div className="sm:flex sm:items-center sm:justify-between">
+      <div className="sm:flex sm:items-center sm:justify-between mt-10">
         <div>
           <div className="flex items-center gap-x-3">
             <h2 className="text-lg font-bold text-gray-800">{datosTabla.name}</h2>

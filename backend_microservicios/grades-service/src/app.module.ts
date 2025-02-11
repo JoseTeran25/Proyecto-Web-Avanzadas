@@ -2,6 +2,8 @@
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { GradesModule } from './grades/grades.module';
+import { EnrollmentModule } from './enrollment/enrollment.module';
+import { CourseModule } from './courses/course.module';
 
 @Module({
   imports: [
@@ -11,11 +13,13 @@ import { GradesModule } from './grades/grades.module';
       port: 5432,
       username: 'postgres',
       password: 'example',
-      database: 'main_db',
+      database: 'grades_db',
       autoLoadModels: true,
       synchronize: true,
     }),
     GradesModule,
+    EnrollmentModule,
+    CourseModule
   ],
 })
 export class AppModule { }

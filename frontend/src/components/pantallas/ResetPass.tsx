@@ -18,7 +18,7 @@ const ResetPass = () => {
         setError('');
 
         try {
-            const respuesta = await fetch('http://26.70.60.63:4000/auth/recover-password', {
+            const respuesta = await fetch('http://26.255.120.45:4000/auth/recover-password', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email }),

@@ -9,7 +9,7 @@ import { lastValueFrom } from 'rxjs';
 
 @Injectable()
 export class GradesService {
-    private readonly USERS_SERVICE_URL = 'http://localhost:4001/users';
+    private readonly USERS_SERVICE_URL = 'http://auth-service:4001/users';
 
     constructor(
         @InjectModel(Grade)
@@ -18,7 +18,7 @@ export class GradesService {
         private readonly sequelize: Sequelize,
 
         private readonly httpService: HttpService // Para consultar el microservicio de users
-    ) {}
+    ) { }
 
     /**
      * Obtiene la información de un usuario desde el microservicio de users.
@@ -75,15 +75,15 @@ export class GradesService {
 
         // Obtener calificaciones del curso sin los detalles de los estudiantes
         const gradesQuery = `
-            SELECT
-                g.id AS grade_id,
-                g.courseId AS course_id,
-                g.studentId AS student_id,
-                g.professorId AS professor_id,
-                g.grade AS grade
-            FROM "GRADES" g
-            WHERE g."courseId" = ?;
-        `;
+    SELECT
+        g.id AS grade_id,
+        g."courseId" AS course_id,  -- Asegurar el uso de comillas dobles
+        g."studentId" AS student_id,
+        g."professorId" AS professor_id,
+        g.grade AS grade
+    FROM "GRADES" g
+    WHERE g."courseId" = ?;
+`;
 
         const grades: any = await this.sequelize.query(gradesQuery, {
             replacements: [courseId],

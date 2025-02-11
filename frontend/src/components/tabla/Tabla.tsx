@@ -36,28 +36,55 @@ export const Tabla = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch("http://26.70.60.63:4000/grade/course/1");
+        const response = await fetch("http://localhost:4000/grade/course/1");
         if (!response.ok) {
           throw new Error("Failed to fetch course data");
         }
         const data = await response.json();
-        setCourse(data.course);
+  
+        // Normalizar los datos para que coincidan con la interfaz Course
+        const formattedCourse: Course = {
+          id: Number(data.courseId), // Convertir a número
+          title: `Course ${data.courseId}`, // No está en el JSON, se usa un placeholder
+          description: "No description available", // Placeholder ya que el backend no lo envía
+          professor: {
+            id: data.students[0]?.grades[0]?.professor_id || 0, // Tomar el ID del primer profesor si hay notas
+            name: "Unknown Professor", // No está en el JSON, placeholder
+          },
+          students: data.students.map((student: any) => ({
+            id: student.id,
+            name: student.name,
+            email: student.email,
+            grades: student.grades.map((grade: any) => ({
+              id: grade.grade_id,
+              grade: grade.grade, // Mantener como string, si se requiere número usar parseFloat(grade.grade)
+              professor: {
+                id: grade.professor_id,
+                name: "Unknown Professor", // No se envía en el JSON, se usa placeholder
+              },
+            })),
+          })),
+        };
+  
+        setCourse(formattedCourse);
+        console.log("Formatted Course:", formattedCourse);
       } catch (err) {
         setError((err as Error).message);
       } finally {
         setLoading(false);
       }
     };
-
+  
     fetchData();
   }, []);
+  
 
   const handleAddGrade = async (studentId: number) => {
     const newGrade = prompt("Enter the grade to add:");
     if (!newGrade) return;
 
     try {
-      const response = await fetch("http://26.70.60.63:4000/grade", {
+      const response = await fetch("http://localhost:4000/grade", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -96,7 +123,7 @@ export const Tabla = () => {
     if (!newGrade) return;
 
     try {
-      const response = await fetch(`http://26.70.60.63:4000/grade/${gradeId}`, {
+      const response = await fetch(`http://localhost:4000/grade/${gradeId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ grade: parseFloat(newGrade) }),
@@ -108,7 +135,7 @@ export const Tabla = () => {
 
       alert("Grade updated successfully!");
       // Refresh data (re-fetch course)
-      const updatedResponse = await fetch("http://26.70.60.63:4000/grade/course/1");
+      const updatedResponse = await fetch("http://localhost:4000/grade/course/1");
       const updatedCourse = await updatedResponse.json();
       setCourse(updatedCourse.course);
     } catch (err) {
@@ -121,7 +148,7 @@ export const Tabla = () => {
     if (!confirm("Are you sure you want to delete this grade?")) return;
 
     try {
-      const response = await fetch(`http://26.70.60.63:4000/grade/${gradeId}`, {
+      const response = await fetch(`http://localhost:4000/grade/${gradeId}`, {
         method: "DELETE",
       });
 
@@ -131,7 +158,7 @@ export const Tabla = () => {
 
       alert("Grade deleted successfully!");
       // Refresh data (re-fetch course)
-      const updatedResponse = await fetch(`http://26.70.60.63:4000/grade/course/1`);
+      const updatedResponse = await fetch(`http://localhost:4000/grade/course/1`);
       const updatedCourse = await updatedResponse.json();
       setCourse(updatedCourse.course);
     } catch (err) {

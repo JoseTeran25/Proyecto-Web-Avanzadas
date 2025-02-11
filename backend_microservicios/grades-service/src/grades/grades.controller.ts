@@ -1,5 +1,5 @@
 // src/grades/grades.controller.ts
-import { Controller, Get, Post, Patch, Delete, Param, Body } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Param, Body } from '@nestjs/common';
 import { GradesService } from './grades.service';
 
 @Controller('grades')
@@ -33,8 +33,9 @@ export class GradesController {
   /**
    * Actualiza una calificación.
    */
-  @Patch(':gradeId')
-  async updateGrade(@Param('gradeId') gradeId: number, @Body() body: { grade: number }) {
+  @Put(':gradeId')
+  async updateGrade(@Param('gradeId') gradeId: number, @Body() body: any) {
+    console.log(`Updating grade ID: ${gradeId}, with value:`, body);
     return this.gradesService.updateGrade(gradeId, body.grade);
   }
 

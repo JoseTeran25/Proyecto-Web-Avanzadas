@@ -36,21 +36,33 @@ export const SignUp = () => {
       name: `${form.get("nombres")} ${form.get("apellidos")}`,
       email: form.get("email") as string,
       password: form.get("password") as string,
+      confirmarPassword: form.get("confirmarPassword") as string, // Solo para validación
       role: selectedRole,
     };
 
-    console.log("Datos enviados:", datosRegistro); // Agregar para depuración
+    console.log("Datos ingresados:", datosRegistro);
 
     const errors = validateForm(datosRegistro);
     if (Object.keys(errors).length > 0) {
       setFormErrors(errors);
       setIsSubmitting(false);
+      console.log("Errores de validación:", errors);
       return;
     }
 
+    // Eliminar `confirmarPassword` antes de enviar al servidor
+    const datosParaServidor = {
+      name: datosRegistro.name,
+      email: datosRegistro.email,
+      password: datosRegistro.password,
+      role: datosRegistro.role,
+    };
+
+    console.log("Datos enviados al servidor:", datosParaServidor);
+
     try {
-      const response = await postCreaUsuario(datosRegistro);
-      console.log("Respuesta del servidor:", response); // Agregar para depuración
+      const response = await postCreaUsuario(datosParaServidor);
+      console.log("Respuesta del servidor:", response);
       alert("Usuario registrado exitosamente.");
       e.currentTarget.reset();
       setSelectedRole(null); // Reinicia el rol seleccionado
@@ -96,6 +108,9 @@ export const SignUp = () => {
                     : "text-blue-500 border border-blue-500"
                     } rounded-lg md:w-auto md:mx-2 focus:outline-none`}
                 >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
                   <span className="mx-2">Profesor</span>
                 </button>
 
@@ -107,6 +122,9 @@ export const SignUp = () => {
                     : "text-blue-500 border border-blue-500"
                     } rounded-lg md:mt-0 md:w-auto md:mx-2 focus:outline-none`}
                 >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
                   <span className="mx-2">Estudiante</span>
                 </button>
               </div>
@@ -116,11 +134,12 @@ export const SignUp = () => {
             </div>
 
             <form onSubmit={handleRegistrarse} className="grid grid-cols-1 gap-6 mt-8 md:grid-cols-2">
-              {[{ name: "nombres", label: "Nombres", placeholder: "John" },
-              { name: "apellidos", label: "Apellidos", placeholder: "Snow" },
-              { name: "email", label: "Correo electrónico", placeholder: "johnsnow@example.com", type: "email" },
-              { name: "password", label: "Contraseña", placeholder: "Ingresa tu contraseña", type: "password" },
-              { name: "confirmar-password", label: "Confirmar contraseña", placeholder: "Repite tu contraseña", type: "password" },
+              {[
+                { name: "nombres", label: "Nombres", placeholder: "John" },
+                { name: "apellidos", label: "Apellidos", placeholder: "Snow" },
+                { name: "email", label: "Correo electrónico", placeholder: "johnsnow@example.com", type: "email" },
+                { name: "password", label: "Contraseña", placeholder: "Ingresa tu contraseña", type: "password" },
+                { name: "confirmarPassword", label: "Confirmar contraseña", placeholder: "Repite tu contraseña", type: "password" },
               ].map(({ name, label, placeholder, type = "text" }) => (
                 <div key={name}>
                   <label className="block mb-2 text-sm text-gray-600">
@@ -144,6 +163,11 @@ export const SignUp = () => {
                 className="flex font-bold items-center justify-between w-full px-6 py-3 text-sm tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50"
               >
                 <span>{isSubmitting ? "Registrando..." : "Registrarse"}</span>
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 rtl:-scale-x-100" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd"
+                    d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                    clipRule="evenodd" />
+                </svg>
               </button>
             </form>
 
