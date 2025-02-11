@@ -8,14 +8,14 @@ import { UsersModule } from './users/users.module'; // Importamos UsersModule
   imports: [
     SequelizeModule.forRoot({
       dialect: 'postgres', // O 'mysql'
-      host: 'localhost',
+      host: 'postgres',
       port: 5432,
       username: 'postgres',
       password: 'example',
-      database: 'auth_db',
+      database: 'main_db',
       models: [],       // Se cargarán desde cada módulo
       autoLoadModels: true,
-      synchronize: false, // Pon true si deseas que Nest cree o altere tablas
+      synchronize: true, // Pon true si deseas que Nest cree o altere tablas
       // logging: console.log, // Descomenta para ver logs de SQL
     }),
     AuthModule,

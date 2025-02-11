@@ -1,18 +1,21 @@
-# Base Image
 FROM node:18
 
-# Set working directory
 WORKDIR /app
 
-# Copy package.json and install dependencies
+# Copia y instala dependencias
 COPY package.json package-lock.json ./
 RUN npm install --production
+RUN npm install -g @nestjs/cli
 
-# Copy application code
+# Copia el código fuente
 COPY . .
 
-# Expose port
+# Compilar TypeScript
+RUN npm run build
+
+
+# Exponer puerto
 EXPOSE 4000
 
-# Start the app
-CMD ["npm", "run", "start"]
+# Ejecutar la aplicación (NestJS ya compilado en dist/)
+CMD ["node", "dist/main"]

@@ -7,13 +7,13 @@ import { GradesModule } from './grades/grades.module';
   imports: [
     SequelizeModule.forRoot({
       dialect: 'postgres',
-      host: 'localhost',
+      host: 'postgres',
       port: 5432,
       username: 'postgres',
       password: 'example',
-      database: 'grades_db',
+      database: 'main_db',
       autoLoadModels: true,
-      synchronize: false,
+      synchronize: true,
     }),
     GradesModule,
   ],

@@ -25,7 +25,7 @@ export class WebsocketsGateway {
     // Redirigir mensaje al microservicio de WebSockets
     try {
       await lastValueFrom(
-        this.httpService.post('http://localhost:4003/chatMessage', { message }),
+        this.httpService.post('http://ws-service:4003/chatMessage', { message }),
       );
     } catch (error) {
       console.error('🚨 Error sending message to WebSocket Service:', error);
