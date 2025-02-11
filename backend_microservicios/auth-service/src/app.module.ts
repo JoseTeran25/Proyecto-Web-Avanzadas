@@ -1,7 +1,8 @@
 // auth-service/src/app.module.ts
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { UsersModule } from './users/users.module';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module'; // Importamos UsersModule
 
 @Module({
   imports: [
@@ -12,12 +13,13 @@ import { UsersModule } from './users/users.module';
       username: 'postgres',
       password: 'example',
       database: 'auth_db',
-      models: [],       // Se cargarán desde cada Módulo
+      models: [],       // Se cargarán desde cada módulo
       autoLoadModels: true,
       synchronize: false, // Pon true si deseas que Nest cree o altere tablas
       // logging: console.log, // Descomenta para ver logs de SQL
     }),
-    UsersModule,
+    AuthModule,
+    UsersModule, // Agregamos UsersModule para que esté disponible en la aplicación
   ],
 })
 export class AppModule {}

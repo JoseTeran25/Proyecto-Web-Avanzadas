@@ -1,4 +1,4 @@
-// grades-service/src/app.module.ts
+// courses-service/src/app.module.ts
 import { Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { GradesModule } from './grades/grades.module';
@@ -18,4 +18,4 @@ import { GradesModule } from './grades/grades.module';
     GradesModule,
   ],
 })
-export class AppModule {}
+export class AppModule { }

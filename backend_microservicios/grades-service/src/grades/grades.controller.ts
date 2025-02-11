@@ -1,38 +1,48 @@
-// grades-service/src/grades/grades.controller.ts
-import { Controller, Post, Get, Put, Delete, Param, Body } from '@nestjs/common';
+// src/grades/grades.controller.ts
+import { Controller, Get, Post, Patch, Delete, Param, Body } from '@nestjs/common';
 import { GradesService } from './grades.service';
 
 @Controller('grades')
 export class GradesController {
-  constructor(private gradesService: GradesService) {}
+  constructor(private readonly gradesService: GradesService) {}
 
+  /**
+   * Crea una nueva calificación.
+   */
   @Post()
-  async create(@Body() dto: { courseId: number, professorId: number, studentId: number, grade: number }) {
-    const newGrade = await this.gradesService.createGrade(
-      dto.courseId,
-      dto.professorId,
-      dto.studentId,
-      dto.grade,
-    );
-    return { message: 'Grade created', grade: newGrade };
+  async createGrade(@Body() body: { courseId: number; professorId: number; studentId: number; grade: number }) {
+    return this.gradesService.createGrade(body.courseId, body.professorId, body.studentId, body.grade);
   }
 
+  /**
+   * Obtiene todas las calificaciones de un estudiante.
+   */
   @Get('student/:studentId')
-  async getByStudent(@Param('studentId') studentId: number) {
+  async getGradesByStudent(@Param('studentId') studentId: number) {
     return this.gradesService.getGradesByStudent(studentId);
   }
 
-  @Put(':gradeId')
-  async update(@Param('gradeId') gradeId: number, @Body() dto: { grade: number }) {
-    const updated = await this.gradesService.updateGrade(gradeId, dto.grade);
-    if (!updated) return { error: 'Grade not found' };
-    return { message: 'Grade updated', grade: updated };
+  /**
+   * Obtiene todas las calificaciones de un curso.
+   */
+  @Get('course/:courseId')
+  async getGradesByCourse(@Param('courseId') courseId: number) {
+    return this.gradesService.getGradesByCourse(courseId);
   }
 
+  /**
+   * Actualiza una calificación.
+   */
+  @Patch(':gradeId')
+  async updateGrade(@Param('gradeId') gradeId: number, @Body() body: { grade: number }) {
+    return this.gradesService.updateGrade(gradeId, body.grade);
+  }
+
+  /**
+   * Elimina una calificación.
+   */
   @Delete(':gradeId')
-  async delete(@Param('gradeId') gradeId: number) {
-    const deleted = await this.gradesService.deleteGrade(gradeId);
-    if (!deleted) return { error: 'Grade not found' };
-    return { message: 'Grade deleted' };
+  async deleteGrade(@Param('gradeId') gradeId: number) {
+    return this.gradesService.deleteGrade(gradeId);
   }
 }

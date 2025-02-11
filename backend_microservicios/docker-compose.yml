@@ -1,0 +1,75 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: example
+      POSTGRES_DB: main_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    restart: always
+    ports:
+      - "4000:4000"
+    depends_on:
+      - auth-service
+      - grades-service
+      - ws-service
+    environment:
+      - NODE_ENV=production
+      - AUTH_SERVICE_URL=http://auth-service:4001
+      - GRADES_SERVICE_URL=http://grades-service:4002
+      - WS_SERVICE_URL=http://ws-service:4003
+    networks:
+      - backend
+
+  auth-service:
+    build: ./auth-service
+    container_name: auth-service
+    restart: always
+    ports:
+      - "4001:4001"
+    depends_on:
+      - postgres
+    environment:
+      - DATABASE_URL=postgres://postgres:example@postgres:5432/auth_db
+      - SECRET_KEY=supersecret
+    networks:
+      - backend
+
+  grades-service:
+    build: ./grades-service
+    container_name: grades-service
+    restart: always
+    ports:
+      - "4002:4002"
+    depends_on:
+      - postgres
+    environment:
+      - DATABASE_URL=postgres://postgres:example@postgres:5432/grades_db
+    networks:
+      - backend
+
+  ws-service:
+    build: ./chat-service
+    container_name: ws-service
+    restart: always
+    ports:
+      - "4003:4003"
+    networks:
+      - backend
+
+networks:
+  backend:
+
+volumes:
+  postgres_data:
